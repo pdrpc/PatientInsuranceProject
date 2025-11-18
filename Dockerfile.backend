@@ -1,0 +1,33 @@
+# / (raiz)/Dockerfile.backend
+
+# --- Estágio 1: Build (Compilação) ---
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+# Copia os arquivos de solução e projeto
+COPY *.sln .
+COPY PatientAPI/*.csproj PatientAPI/
+COPY Application/*.csproj Application/
+COPY Domain/*.csproj Domain/
+COPY Infrastructure/*.csproj Infrastructure/
+COPY UnitTests/*.csproj UnitTests/
+
+# Restaura as dependências (agora vai funcionar)
+RUN dotnet restore "PatientInsuranceProject.sln"
+
+# Copia todo o resto
+COPY . .
+
+# Publica a API
+WORKDIR "/src/PatientAPI"
+RUN dotnet publish "PatientAPI.csproj" -c Release -o /app/publish
+
+# --- Estágio 2: Final (Produção) ---
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "PatientAPI.dll"]

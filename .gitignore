@@ -1,0 +1,25 @@
+# / (raiz)/.gitignore
+
+# --- Segredos ---
+# Ignora o arquivo de ambiente do Docker Compose
+.env
+
+# --- Artefatos de Build ---
+**/bin/
+**/obj/
+**/dist/
+**/node_modules/
+**/.angular/cache/
+
+# --- IDE e Ferramentas ---
+.vs/
+.vscode/
+*.suo
+*.user
+*.nupkg
+
+# --- Logs e Arquivos de OS ---
+*.log
+.DS_Store
+Thumbs.db
+npm-debug.log
